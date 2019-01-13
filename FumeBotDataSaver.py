@@ -321,6 +321,10 @@ class FumeBotTrainingDataSaver:  # To save the training data
 
 
 class ViewTrainingData:  # For viewing the training data
+    """
+    This class is used for viewing the collected training data
+    in the GUI application in a window which is not implemented in the App.
+    """
 
     newFrame = QtCore.pyqtSignal(np.ndarray,np.ndarray)
 
