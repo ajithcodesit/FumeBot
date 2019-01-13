@@ -1,6 +1,6 @@
 #include <Wire.h>
 #include "MAX30105.h"
-#include <SparkFunCCS811.h>
+#include <SparkFunCCS811.h> //Use version 1.0.0 of the library
 #include <Adafruit_BME280.h>
 #include "Adafruit_FONA.h"
 #include "ServoMod.h"
@@ -1269,9 +1269,3 @@ void ctrl_pan_and_tilt(int pan_angle, int tilt_angle)  //Function to pan and til
     prev_tilt_angle=tilt_angle;
   }
 }
-
-
-
-
-
-
