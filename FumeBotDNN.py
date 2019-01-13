@@ -49,5 +49,3 @@ class FumeBotDNN(QtCore.QObject):
             move_list=list(output.astype(int))  # Convert the numpy array to a list
 
             self.dnnOutputKeyPress.emit(move_list)
-
-

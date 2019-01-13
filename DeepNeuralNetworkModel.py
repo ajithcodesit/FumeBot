@@ -49,5 +49,3 @@ def AlexNet(width,height,lr):
     print(model.summary())
 
     return model
-
-

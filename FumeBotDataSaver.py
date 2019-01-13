@@ -373,27 +373,3 @@ class ViewTrainingData:  # For viewing the training data
                 self.view_completed_once=True
 
         print("View thread exited")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
