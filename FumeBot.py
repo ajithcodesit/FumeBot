@@ -209,7 +209,7 @@ class MainWindow(QtGui.QMainWindow):
 
     # Variables for the training data generation
     train_file_name='training_dataset.npy'
-    train_file_path=os.path.expanduser('~\\Documents\\FumeBot\\Training')
+    train_file_path='~\\Documents\\FumeBot\\Training'
     train_path_exists=False
     train_frame_width=80
     train_frame_height=60
@@ -339,7 +339,7 @@ class MainWindow(QtGui.QMainWindow):
 
     # Recording video
     video_file_name='Video.avi'
-    video_file_path=os.path.expanduser('~\\Documents\\FumeBot\\Video')
+    video_file_path='~\\Documents\\FumeBot\\Video'
     video_path_exists=False
     rec_width=1280
     rec_height=720
@@ -2024,8 +2024,11 @@ class MainWindow(QtGui.QMainWindow):
         self.display_info(self.app_msg,"Use capture resolution: "+str(res_enable_string))
         self.display_info(self.app_msg,"USe capture FPS: "+str(fps_enable_string))
 
+        # The relative path is stored instead of the absolute path
+        rel_path_save=os.path.relpath(self.video_file_path, start=os.path.expanduser('~'))
+
         self.config.set('Video_rec','vid_file_name',str(self.video_file_name))
-        self.config.set('Video_rec','vid_file_path',str(self.video_file_path))
+        self.config.set('Video_rec','vid_file_path',str(rel_path_save))
         self.config.set('Video_rec','vid_rec_res',str(self.rec_res_index))
         self.config.set('Video_rec','vid_rec_fps',str(self.rec_fps))
         self.config.set('Video_rec','use_cap_res',str(self.use_cap_resolution))
@@ -2053,7 +2056,7 @@ class MainWindow(QtGui.QMainWindow):
     def get_video_recording_setting_cfg(self):  # Function to get the video recording configuration
 
         self.video_file_name=self.config.get('Video_rec', 'vid_file_name')
-        self.video_file_path=self.config.get('Video_rec', 'vid_file_path')
+        self.video_file_path=os.path.expanduser(self.config.get('Video_rec', 'vid_file_path'))
         self.rec_res_index=self.config.getint('Video_rec', 'vid_rec_res')
         self.rec_fps=self.config.getint('Video_rec', 'vid_rec_fps')
         self.use_cap_resolution=self.config.getint('Video_rec','use_cap_res')
@@ -2124,8 +2127,11 @@ class MainWindow(QtGui.QMainWindow):
                           str(self.train_frame_width)+"x"+str(self.train_frame_height))
         self.display_info(self.app_msg,"Automatic save per every: "+str(self.save_per_every)+" sample(s)")
 
-        self.config.set('Training_rec', 'train_file_name',self.train_file_name)
-        self.config.set('Training_rec', 'train_file_path',self.train_file_path)
+        # The relative path is stored instead of the absolute path
+        rel_path_save = os.path.relpath(self.train_file_path, start=os.path.expanduser('~'))
+
+        self.config.set('Training_rec', 'train_file_name',str(self.train_file_name))
+        self.config.set('Training_rec', 'train_file_path',str(rel_path_save))
         self.config.set('Training_rec', 'train_frame_width',str(self.train_frame_width))
         self.config.set('Training_rec', 'train_frame_height',str(self.train_frame_height))
         self.config.set('Training_rec', 'save_per_every',str(self.save_per_every))
@@ -2147,7 +2153,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def get_training_recording_setting_cfg(self):
         self.train_file_name=self.config.get('Training_rec','train_file_name')
-        self.train_file_path=self.config.get('Training_rec','train_file_path')
+        self.train_file_path=os.path.expanduser(self.config.get('Training_rec','train_file_path'))
         self.train_frame_width=self.config.getint('Training_rec','train_frame_width')
         self.train_frame_height=self.config.getint('Training_rec','train_frame_height')
         self.save_per_every=self.config.getint('Training_rec','save_per_every')
