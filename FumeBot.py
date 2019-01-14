@@ -923,7 +923,8 @@ class MainWindow(QtGui.QMainWindow):
 
         return interval  # The interval between frame updates
 
-    def convert_frame_to_pix(self,frame_bgr): # Function to convert cv2 frame to pix format to be displayed in GUI
+    @staticmethod
+    def convert_frame_to_pix(frame_bgr): # Function to convert cv2 frame to pix format to be displayed in GUI
         frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)  # BGR to RGB
         image = QtGui.QImage(frame_rgb, frame_rgb.shape[1], frame_rgb.shape[0], QtGui.QImage.Format_RGB888)
         pixel = QtGui.QPixmap.fromImage(image)
@@ -1506,7 +1507,8 @@ class MainWindow(QtGui.QMainWindow):
     def thermal_image_pos_vert_slider(self):  # Function gets called when the translation slider changes
         self.therm_pos_vert=self.ui.thermPosVertSlider.value()
 
-    def pad_thermal_image(self,img):  # Function to pad the scaled thermal image which is 160x120 or greater to 1280x720
+    @staticmethod
+    def pad_thermal_image(img):  # Function to pad the scaled thermal image which is 160x120 or greater to 1280x720
         img_height,img_width=img.shape[:2]
 
         if img_width < 1280 and img_height < 720:
@@ -1526,7 +1528,8 @@ class MainWindow(QtGui.QMainWindow):
         else:
             return cv2.resize(img,(1280,720),interpolation=cv2.INTER_LINEAR)
 
-    def scale_thermal_image(self,img,scaler,scale_divider):  # Scale the thermal image
+    @staticmethod
+    def scale_thermal_image(img,scaler,scale_divider):  # Scale the thermal image
         height,width=img.shape[:2]
 
         res = cv2.resize(img,(int(width*scaler/scale_divider),int(height*scaler/scale_divider)),
@@ -1534,14 +1537,16 @@ class MainWindow(QtGui.QMainWindow):
 
         return res
 
-    def change_to_16by9_thermal_image(self,img):  # Function to change from 4:3 to 16:9 aspect ratio
+    @staticmethod
+    def change_to_16by9_thermal_image(img):  # Function to change from 4:3 to 16:9 aspect ratio
         _,width=img.shape[:2]
 
         res=cv2.resize(img,(width,int(width*(9/16))),interpolation=cv2.INTER_LINEAR)
 
         return res
 
-    def translate_thermal_image(self,img,trans_horz,trans_vert):  # Function to translate the thermal image
+    @staticmethod
+    def translate_thermal_image(img,trans_horz,trans_vert):  # Function to translate the thermal image
         rows, columns = img.shape[:2]
 
         TRANS_MATRIX = np.float32([[1, 0, trans_horz], [0, 1, trans_vert]])
@@ -3331,7 +3336,8 @@ class MainWindow(QtGui.QMainWindow):
             self.send_socket_commands(cmd)  # Send the pan and tilt command
 
     # Formatting of command
-    def format_command(self,cmd_type,data_list):  # Function to format command and command data
+    @staticmethod
+    def format_command(cmd_type,data_list):  # Function to format command and command data
         start_marker="$"
         end_marker="#"
 
@@ -3586,7 +3592,8 @@ class MainWindow(QtGui.QMainWindow):
         if q_action_obj.text() == "About":
             self.show_about_dialog()
 
-    def show_about_dialog(self):  # Show the about dialog :)
+    @staticmethod
+    def show_about_dialog():  # Show the about dialog :)
         from About_UI import Ui_AboutDialog
         about_dialog=QtGui.QDialog()  # Object of the dialog
         about_ui=Ui_AboutDialog()   # Object of the about UI
