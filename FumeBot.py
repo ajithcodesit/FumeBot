@@ -20,7 +20,7 @@ import numpy as np
 from PyQt4 import QtCore, QtGui
 from FumeBot_UI import Ui_mainWindow
 from FumeBotDataSaver import FumeBotVideoSaver, FumeBotTrainingDataSaver
-# from FumeBotDNN import FumeBotDNN
+from FumeBotDNN import FumeBotDNN
 from SockCommThreaded import SockComm
 from configparser import ConfigParser
 
@@ -382,7 +382,11 @@ class MainWindow(QtGui.QMainWindow):
 
         self.display_info(self.app_msg,self.app_name+" "+self.app_version)  # Display the app name and version
 
-        # self.dnn=FumeBotDNN()  # Load the Neural Network
+        self.dnn=None
+        self.button_handle_timer=None
+        self.display_update_timer=None
+        self.warning_flasher_timer=None
+        self.non_critical_flasher_timer=None
 
         self.connection_to_signals()
         self.attributes_of_ui()
@@ -539,9 +543,6 @@ class MainWindow(QtGui.QMainWindow):
         self.non_critical_flasher_timer=QtCore.QTimer()
         self.non_critical_flasher_timer.timeout.connect(self.hud_non_critical_flasher_set)
         self.non_critical_flasher_timer.setInterval(self.flash_timer_nc)
-
-        # Connection to the DNN output key press signal
-        # self.dnn.dnnOutputKeyPress.connect(self.handle_dnn_key_press)
 
     def attributes_of_ui(self):  # Properties of the GUI
 
@@ -797,19 +798,32 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.videoPortSpinBox.setValue(self.port_img)
 
     # Deep Neural Network support functions
+    def init_nerual_net(self):  # Initialize the nerual network defined in the FumeBotDNN file
+
+        try:
+            self.dnn=FumeBotDNN()  # Load the Neural Network
+            self.dnn.dnnOutputKeyPress.connect(self.handle_dnn_key_press)  # Connection to the DNN keypress signal
+            self.display_info(self.app_msg,"DNN module initialized successfully")
+        except Exception as e:
+            self.display_info(self.app_msg,"Loading the DNN module failed")
+            self.display_info(self.app_msg,str(e))
+            self.dnn=None
+
     def neural_net_activate_deactivate(self):
 
-        if self.socket_img_connected is True:  # If the socket for video frame is connected
+        if self.socket_img_connected is True:  # Check if the socket for video frame is connected
 
-            self.nn_active = not self.nn_active
+            if self.dnn is None: # Check if initialization of DNN module was done
+                self.nn_active = not self.nn_active
 
-            if self.nn_active is True:
-                self.display_info(self.app_msg,"Deep Nerual Network activated")
+                if self.nn_active is True:
+                    self.display_info(self.app_msg,"Deep Nerual Network activated")
 
+                else:
+                    self.display_info(self.app_msg,"Deep Nerual Network deactivated")
+                    self.key_pressed_dict=self.default_key_pressed_dict.copy()  # Shallow copy is used to reset the dict
             else:
-                self.display_info(self.app_msg,"Deep Nerual Network deactivated")
-                self.key_pressed_dict=self.default_key_pressed_dict.copy()  # Shallow copy is used to reset the dict
-
+                self.display_info(self.app_msg,"DNN not initialized or an error occurred during initialization")
         else:
             self.display_info(self.app_msg, "Deep Neural Network cannot be activated. No video feed available")
 
@@ -820,7 +834,8 @@ class MainWindow(QtGui.QMainWindow):
         if jpeg_bytes is not None:
             if len(jpeg_bytes) > 0:
 
-                temp_frame_bgr=cv2.imdecode(np.fromstring(jpeg_bytes,dtype=np.uint8),cv2.IMREAD_COLOR)  # convert string bytes to image
+                # Convert string bytes to image
+                temp_frame_bgr=cv2.imdecode(np.fromstring(jpeg_bytes,dtype=np.uint8),cv2.IMREAD_COLOR)
 
                 if temp_frame_bgr is not None:  # If the above operation did not produced a none
                     self.frame_bgr=temp_frame_bgr  # The main frame for BGR data is updated
@@ -838,7 +853,8 @@ class MainWindow(QtGui.QMainWindow):
                                                     interpolation=cv2.INTER_LINEAR)
 
                 if self.nn_active:  # Frames for the input to the neural network
-                    self.frame_dnn_bgr=cv2.resize(self.frame_bgr,(80,60),interpolation=cv2.INTER_LINEAR)
+                    # Preprocessing of image is all done in the DNN program to be presented to the NN
+                    self.frame_dnn_bgr=self.frame_bgr.copy()
 
                 height, width = self.frame_bgr.shape[:2]  # Get the size of the image
 
@@ -868,7 +884,7 @@ class MainWindow(QtGui.QMainWindow):
             trans_result=self.translate_thermal_image(padded_result,self.therm_pos_horz,self.therm_pos_vert)
 
             dst=cv2.addWeighted(self.frame_bgr,float(self.norm_cam_weight/100.0),
-                                    trans_result,float(self.therm_cam_weight/100.0),0)
+                                trans_result,float(self.therm_cam_weight/100.0),0)
 
             self.final_frame=dst
 
@@ -881,14 +897,20 @@ class MainWindow(QtGui.QMainWindow):
         # The video frame update was normally done in this function but was moved to the update video feed function
 
     def update_video_feed_display(self):  # Function to update the video feed at whatever frame rate
-
+        """
+        This function is called at a fixed interval to be display the new
+        image received from the socket. This is not tied to actual frame rate of the
+        images coming through the socket and therefore the same image can be shown multiple
+        times if new images are not received by the get_socket_stream_frames function.
+        Training data and Video recordings are also done here.
+        """
         if self.socket_img_connected is True:
             frame=self.final_frame.copy()  # Copy the frame
             self.video_HUD_display(frame)  # Add the HUD elements to the frame
 
             # Giving the frame to the Neural Network
-            # if self.nn_active is True:
-            #     self.dnn.dnn_model_prediction(dnn_input=self.frame_dnn_bgr)
+            if self.nn_active is True:  # Can be run in the get_socket_stream_frames function
+                self.dnn.dnn_model_prediction(dnn_input=self.frame_dnn_bgr)
 
             # The HUD elements are also saved
             if self.enable_video_recording is True and not self.video_recording_paused:
@@ -2913,8 +2935,8 @@ class MainWindow(QtGui.QMainWindow):
             return
 
         pressed_key=event.key()
-        self.get_key_press(pressed_key)
-        self.get_and_handle_function_key_presses(pressed_key)
+        self.get_key_press(pressed_key)  # Handling keypress for robot motion
+        self.get_and_handle_function_key_presses(pressed_key)  # Handling keypress for functions
 
         self.start_button_press_timer()  # Start the timer
 
