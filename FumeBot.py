@@ -544,6 +544,10 @@ class MainWindow(QtGui.QMainWindow):
         self.non_critical_flasher_timer.timeout.connect(self.hud_non_critical_flasher_set)
         self.non_critical_flasher_timer.setInterval(self.flash_timer_nc)
 
+        # Connection to initializing and activating the DNN
+        self.ui.initDNNButton.clicked.connect(self.init_nerual_net)
+        self.ui.controlDNNButton.clicked.connect(self.neural_net_activate_deactivate)
+
     def attributes_of_ui(self):  # Properties of the GUI
 
         # For info display text edit
