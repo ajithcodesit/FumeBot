@@ -38,8 +38,8 @@ class FumeBotDNN(QtCore.QObject):
 
     def dnn_model_prediction(self, dnn_input):
 
-        input_frame=dnn_input
-        input_frame=cv2.cvtColor(input_frame,cv2.COLOR_BGR2GRAY)  # Convert gray format here for now
+        input_frame=cv2.resize(dnn_input, (self.frame_width, self.frame_height), interpolation=cv2.INTER_LINEAR)
+        input_frame=cv2.cvtColor(input_frame,cv2.COLOR_BGR2GRAY)  # Convert grayscale
         input_frame=input_frame.reshape(-1,self.frame_width,self.frame_height,self.frame_channels)
 
         # Neural Network prediction goes here
