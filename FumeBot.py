@@ -805,6 +805,9 @@ class MainWindow(QtGui.QMainWindow):
     def init_nerual_net(self):  # Initialize the nerual network defined in the FumeBotDNN file
 
         try:
+            if self.nn_active is True:  # If the NN was activated before a new initialization was done
+                self.neural_net_activate_deactivate()
+
             self.dnn=FumeBotDNN()  # Load the Neural Network
             self.dnn.dnnOutputKeyPress.connect(self.handle_dnn_key_press)  # Connection to the DNN keypress signal
             self.display_info(self.app_msg,"DNN module initialized successfully")
@@ -3286,6 +3289,9 @@ class MainWindow(QtGui.QMainWindow):
 
         elif key_code == QtCore.Qt.Key_T:  # This is to start recording the training data
             self.training_data_recording_start_stop()
+
+        elif key_code == QtCore.Qt.Key_I:  # Initialize the neural network
+            self.init_nerual_net()
 
         elif key_code == QtCore.Qt.Key_N:  # For activating/deactivating the Neural Network
             self.neural_net_activate_deactivate()
