@@ -3,14 +3,6 @@ from keras.layers import Dense,Dropout,Flatten
 from keras.layers import Conv2D,MaxPool2D,ZeroPadding2D
 from keras.optimizers import Adam
 
-'''
-**Change Log**
-- Removed SGD and used Adam optimizer
-- Removed batch normalization layers
-- Tried to used ReLU at the FC layers did not yield good results
-- Batch normalization removal has caused the model to produce consistent results
-'''
-
 
 def AlexNet(width,height,lr):
     model = Sequential()
