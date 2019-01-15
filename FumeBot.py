@@ -428,7 +428,7 @@ class MainWindow(QtGui.QMainWindow):
         # This is the timer that is used to refresh the display panel
         self.display_update_timer=QtCore.QTimer()
         self.display_update_timer.timeout.connect(self.update_video_feed_display)
-        self.display_update_timer.setInterval(self.calc_interval_from_FPS())
+        self.display_update_timer.setInterval(self.calc_interval_from_fps())
         self.display_update_timer.start()
 
         # Alarm reset button
@@ -469,7 +469,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.feedSetButton.clicked.connect(self.video_disp_set_clicked)
         self.ui.feedResetButton.clicked.connect(self.video_disp_reset_clicked)
 
-        self.ui.enableHUDCheckBox.stateChanged.connect(self.HUD_checkbox_changed)
+        self.ui.enableHUDCheckBox.stateChanged.connect(self.hud_checkbox_changed)
 
         # Connections for the video recording settings toolbox
         self.ui.videoRecSetButton.clicked.connect(self.video_recording_config_set_clicked)
@@ -910,7 +910,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         if self.socket_img_connected is True:
             frame=self.final_frame.copy()  # Copy the frame
-            self.video_HUD_display(frame)  # Add the HUD elements to the frame
+            self.video_hud_display(frame)  # Add the HUD elements to the frame
 
             # Giving the frame to the Neural Network
             if self.nn_active is True:  # Can be run in the get_socket_stream_frames function
@@ -943,7 +943,7 @@ class MainWindow(QtGui.QMainWindow):
         else:
             self.display_black_screen()  # Display the black screen
 
-    def calc_interval_from_FPS(self):  # Function that calculates the interval for display update from FPS
+    def calc_interval_from_fps(self):  # Function that calculates the interval for display update from FPS
         interval=(1/float(self.display_fps))*1000.0  # Interval in millisecond
         interval=int(round(interval,0))
 
@@ -956,7 +956,7 @@ class MainWindow(QtGui.QMainWindow):
         pixel = QtGui.QPixmap.fromImage(image)
         return pixel  # The pix formatted image ready to be displayed
 
-    def video_HUD_display(self, frame_bgr):  # Function to display Heads Up Display (HUD) elements
+    def video_hud_display(self, frame_bgr):  # Function to display Heads Up Display (HUD) elements
 
         if frame_bgr is not None and self.ui.enableHUDCheckBox.isChecked():
             if len(frame_bgr) > 0:
@@ -1632,7 +1632,7 @@ class MainWindow(QtGui.QMainWindow):
         else:
             self.ui.enableHUDCheckBox.setChecked(False)
 
-    def HUD_checkbox_changed(self):  # Function which gets called when checkbox changed
+    def hud_checkbox_changed(self):  # Function which gets called when checkbox changed
         if self.ui.enableHUDCheckBox.isChecked():
             self.enable_HUD=1
         else:
