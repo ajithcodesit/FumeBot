@@ -247,6 +247,7 @@ class MainWindow(QtGui.QMainWindow):
 
     max_pan_tilt_scaler=10.0
 
+    # Servo motor should be checked to see if the limits can be achieved
     pan_tilt_limit_dict={
         'TILT_UP':180,
         'TILT_DOWN':0,
@@ -822,7 +823,7 @@ class MainWindow(QtGui.QMainWindow):
 
         if self.socket_img_connected is True:  # Check if the socket for video frame is connected
 
-            if self.dnn is None: # Check if initialization of DNN module was done
+            if self.dnn is None:  # Check if initialization of DNN module was done
                 self.nn_active = not self.nn_active
 
                 if self.nn_active is True:
@@ -834,7 +835,7 @@ class MainWindow(QtGui.QMainWindow):
             else:
                 self.display_info(self.app_msg,"DNN not initialized or an error occurred during initialization")
         else:
-            self.display_info(self.app_msg, "Deep Neural Network cannot be activated. No video feed available")
+            self.display_info(self.app_msg,"Deep Neural Network cannot be activated. No video feed available")
 
     # Capture stream functions
     def get_socket_stream_frames(self, jpeg_bytes, therm_jpeg_bytes):  # Gets the frames and updates the display
