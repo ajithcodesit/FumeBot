@@ -1,3 +1,4 @@
+import os
 import cv2
 import numpy as np
 from keras.models import model_from_json
@@ -16,13 +17,15 @@ class FumeBotDNN(QtCore.QObject):
         self.frame_height=60
         self.frame_channels=1
 
+        # Model name and path should be changed here
         self.model_file='Fumebot-0.0001-AlexNet-12-model-95AP.json'
-        self.model_file_path='C:\\Users\\Ajith Thomas\\Documents\\FumeBot - DNN Model\\Project Models'
-        self.model_path_to_file=self.model_file_path+'\\'+self.model_file
+        self.model_file_path=os.path.expanduser('~\\Documents\\FumeBot - DNN Model\\Project Models')
+        self.model_path_to_file=os.path.join(self.model_file_path,self.model_file)
 
+        # Weight file name and path should be changed here
         self.weight_file='Fumebot-0.0001-AlexNet-12-weight-95AP.h5'
-        self.weight_file_path='C:\\Users\\Ajith Thomas\\Documents\\FumeBot - DNN Model\\Project Models'
-        self.weight_path_to_file=self.weight_file_path+'\\'+self.weight_file
+        self.weight_file_path=os.path.expanduser('~\\Documents\\FumeBot - DNN Model\\Project Models')
+        self.weight_path_to_file=os.path.join(self.weight_file_path,self.weight_file)
 
         # Loading the model from JSON file
         model_json_file = open(self.model_path_to_file, 'r')

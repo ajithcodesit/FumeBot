@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from keras.callbacks import TensorBoard
 from DeepNeuralNetworkModel import AlexNet
@@ -8,26 +9,28 @@ HEIGHT=60
 LR=1e-4
 EPOCH=20
 
-MODEL_PATH='C:\\Users\\Ajith Thomas\\Documents\\FumeBot - DNN Model'
 MODEL_NAME='Fumebot-{}-{}-{}-model.json'.format(LR,'AlexNet',EPOCH)
-MODEL_SAVE_PATH=MODEL_PATH+"\\"+MODEL_NAME
+MODEL_PATH=os.path.expanduser('~\\Documents\\FumeBot - DNN Model')
+MODEL_SAVE_PATH=os.path.join(MODEL_PATH,MODEL_NAME)
 
-WEIGHT_PATH='C:\\Users\\Ajith Thomas\\Documents\\FumeBot - DNN Model'
 WEIGHT_NAME='Fumebot-{}-{}-{}-weight.h5'.format(LR,'AlexNet',EPOCH)
-WEIGHT_SAVE_PATH=WEIGHT_PATH+"\\"+WEIGHT_NAME
+WEIGHT_PATH=os.path.expanduser('~\\Documents\\FumeBot - DNN Model')
+WEIGHT_SAVE_PATH=os.path.join(WEIGHT_PATH,WEIGHT_NAME)
 
 CHECKPOINT_FILE_NAME='Model_AlexNet'
-CHECKPOINT_PATH='C:\\Users\\Ajith Thomas\\Documents\\FumeBot - DNN Model\\Training Save Files'
-CHECKPOINT_FILE_PATH=CHECKPOINT_PATH+'\\'+CHECKPOINT_FILE_NAME
+CHECKPOINT_PATH=os.path.expanduser('~\\Documents\\FumeBot - DNN Model\\Training Save Files')
+CHECKPOINT_FILE_PATH=os.path.join(CHECKPOINT_PATH,CHECKPOINT_FILE_NAME)
 
 LOG_FILE_NAME='Log'
-LOG_PATH='C:\\Users\\Ajith Thomas\\Documents\\FumeBot - DNN Model\\Training Save Files'
-LOG_FILE_PATH=LOG_PATH+'\\'+LOG_FILE_NAME
+LOG_PATH=os.path.expanduser('~\\Documents\\FumeBot - DNN Model\\Training Save Files')
+LOG_FILE_PATH=os.path.join(LOG_PATH,LOG_FILE_NAME)
 
 # Path to the training data set
-TRAIN_DATA_PATH='C:\\Users\\Ajith Thomas\\Documents\\FumeBot - Training Datasets\\training_data_obs_crs_v1.npy'
+TRAIN_DATA_FILE='training_data_obs_crs_v1.npy'
+TRAIN_DATA_PATH=os.path.expanduser('~\\Documents\\FumeBot - Training Datasets')
+TRAIN_DATA_FILE_PATH=os.path.join(TRAIN_DATA_PATH,TRAIN_DATA_FILE)
 
-train_data=np.load(TRAIN_DATA_PATH)
+train_data=np.load(TRAIN_DATA_FILE_PATH)
 print("Training data count = "+str(len(train_data))+"\n")
 
 train=train_data[:-500]
