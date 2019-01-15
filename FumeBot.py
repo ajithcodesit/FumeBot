@@ -804,6 +804,8 @@ class MainWindow(QtGui.QMainWindow):
     # Deep Neural Network support functions
     def init_nerual_net(self):  # Initialize the nerual network defined in the FumeBotDNN file
 
+        self.display_info(self.app_msg, "Trying to initialize DNN. Please wait...")
+
         try:
             if self.nn_active is True:  # If the NN was activated before a new initialization was done
                 self.neural_net_activate_deactivate()
