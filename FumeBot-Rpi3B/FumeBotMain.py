@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 
 """
 FUMEBOT CLIENT FOR RPI3B
@@ -31,7 +31,7 @@ MCU_RDY=23
 config_path='bot_config.ini'
 
 # Host address and Ports for socket communication
-host = '192.168.137.1'
+host = '192.168.1.8'
 data_port = 8090
 capture_port = 8089
 
@@ -515,15 +515,10 @@ def get_wifi_signal_strength():  # Function to get the wifi strength (Returns si
 	return link_quality,signal_level
 
 def is_wifi_connected():  # Function to check whether the wifi is connected or not
-	"""
-	This function check whether the host IP is found in the output of the ip route 
-	command, if found it means that the server and client are on the same internal
-	network. (Internal network, starting with 192.168.XXX.XXX)
-	"""
+	
 	p=subprocess.Popen(["ip","route"],stdout=subprocess.PIPE)
 	output,_=p.communicate()
-	output_list=output.split(" ")[0:3]  # Parse output list
-	if host in output_list:  # Is the host IP in the list
+	if output != "": # If it is not an empty string then wifi is connected
 		return True
 	else:
 		return False
