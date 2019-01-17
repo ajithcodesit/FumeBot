@@ -828,7 +828,7 @@ class MainWindow(QtGui.QMainWindow):
 
                 if self.nn_active is True:
                     self.display_info(self.app_msg,"Deep Nerual Network activated")
-                    self.ui.controlDNNButton.setText("Activated")
+                    self.ui.controlDNNButton.setText("Deactivate")
 
                 else:
                     self.display_info(self.app_msg,"Deep Nerual Network deactivated")
