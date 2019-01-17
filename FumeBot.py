@@ -823,14 +823,16 @@ class MainWindow(QtGui.QMainWindow):
 
         if self.socket_img_connected is True:  # Check if the socket for video frame is connected
 
-            if self.dnn is None:  # Check if initialization of DNN module was done
+            if self.dnn is not None:  # Check if initialization of DNN module was done
                 self.nn_active = not self.nn_active
 
                 if self.nn_active is True:
                     self.display_info(self.app_msg,"Deep Nerual Network activated")
+                    self.ui.controlDNNButton.setText("Activated")
 
                 else:
                     self.display_info(self.app_msg,"Deep Nerual Network deactivated")
+                    self.ui.controlDNNButton.setText("Activate")
                     self.key_pressed_dict=self.default_key_pressed_dict.copy()  # Shallow copy is used to reset the dict
             else:
                 self.display_info(self.app_msg,"DNN not initialized or an error occurred during initialization")
