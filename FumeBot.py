@@ -21,7 +21,7 @@ from PyQt4 import QtCore, QtGui
 from FumeBot_UI import Ui_mainWindow
 from FumeBotDataSaver import FumeBotVideoSaver, FumeBotTrainingDataSaver
 from FumeBotDNN import FumeBotDNN
-from SockCommThreaded import SockComm
+from FumeBotSockComm import SockComm
 from configparser import ConfigParser
 
 
@@ -3631,7 +3631,7 @@ class MainWindow(QtGui.QMainWindow):
 
     @staticmethod
     def show_about_dialog():  # Show the about dialog :)
-        from About_UI import Ui_AboutDialog
+        from FumeBotAbout_UI import Ui_AboutDialog
         about_dialog=QtGui.QDialog()  # Object of the dialog
         about_ui=Ui_AboutDialog()   # Object of the about UI
         about_ui.setupUi(about_dialog)  # Setup the about UI
