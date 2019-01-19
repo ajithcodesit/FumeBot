@@ -13,6 +13,7 @@ Written by  :  Ajith Thomas
 Date        :  5-4-2018
 """
 
+import os
 import time
 import subprocess
 from ConfigParser import ConfigParser
@@ -28,7 +29,9 @@ RESET_AVR=22  # Pin that resets the Arduino if needed
 MCU_RDY=23
 
 # Configuration file for fumebot
-config_path='bot_config.ini'
+CONFIG_FILE='bot_config.ini'
+CONFIG_PATH='/home/pi/FumeBot/'
+config_path=os.path.join(CONFIG_PATH,CONFIG_FILE)
 
 # Host address and Ports for socket communication
 host = '192.168.1.8'
@@ -603,6 +606,7 @@ if __name__ == '__main__':
 
 	GPIO.setup(RUNNING_LED,GPIO.OUT)
 	GPIO.setup(CONNECTED_LED,GPIO.OUT)
+	GPIO.setup(THREAD_RESTART_LED,GPIO.OUT)
 	GPIO.setup(RESET_AVR,GPIO.OUT)  # This is pin is used to reset the Arduino
 	GPIO.setup(MCU_RDY,GPIO.IN)
 
@@ -701,8 +705,6 @@ if __name__ == '__main__':
 			update_defaults_from_config_file()
 
 			soc_comm.stop_all_socket_threads()
-
-			soc_comm.join_all_threads()  # Join all the thread
 			
 			soc_comm.__init__(host,data_port,capture_port)  # Reinitialize the socket
 			soc_comm.set_capture_settings(width,height,fps,color)
