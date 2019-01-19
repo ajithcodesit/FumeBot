@@ -5,8 +5,8 @@ After=multi-user.target
 [Service]
 Type=idle
 Restart=always
-WorkingDirectory=/home/pi/FumeBot/
-ExecStart=/usr/bin/python2 /home/pi/FumeBot/FumeBotMain.py
+WorkingDirectory=/home/pi/FumeBot-Rpi3/
+ExecStart=/usr/bin/python2 /home/pi/FumeBot-Rpi3/FumeBotMain.py
 
 [Install]
 WantedBy=multi-user.target
