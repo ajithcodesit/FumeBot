@@ -4,4 +4,5 @@
 
 # Files with the following extentions are ignored
 **.pyc
+**.swp
 **.o
