@@ -322,7 +322,6 @@ class FumeBotSocket(object):
     def get_socket_data(self):  # Function to the read the socket data from the queue
         if self.q_data_r.qsize() > 0:
             data=self.q_data_r.get()
-            print("Data received: "+str(data))
             return data
 
     def is_socket_data_available(self):  # Function to check whether data is available in the queue
