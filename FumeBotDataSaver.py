@@ -33,7 +33,7 @@ class FumeBotVideoSaver:  # For saving the video
 
         self.frame_count=0
 
-        self.vid_path_to_file= self.vid_path + '\\' + self.vid_file_name  # This is the final video file path
+        self.vid_path_to_file=os.path.join(self.vid_path,self.vid_file_name) # This is the final video file path
         self.path_to_file_exists=False
 
         try:
@@ -61,7 +61,7 @@ class FumeBotVideoSaver:  # For saving the video
         self.height=height
         self.fps=fps
 
-        self.vid_path_to_file = self.vid_path + '\\' + self.vid_file_name  # This is the final video file path
+        self.vid_path_to_file = os.path.join(self.vid_path,self.vid_file_name)
         self.path_to_file_exists = False
 
         try:
@@ -122,7 +122,7 @@ class FumeBotTrainingDataSaver:  # To save the training data
         self.training_data=[]
         self.saves_per_every=saves_ps  # Save the training data per every X amount of data
 
-        self.train_path_to_file=self.train_path+'\\'+self.train_file_name  # Final path to the file
+        self.train_path_to_file=os.path.join(self.train_path,self.train_file_name) # Final path to the file
 
         self.path_to_file_exists=False
 
@@ -131,7 +131,7 @@ class FumeBotTrainingDataSaver:  # To save the training data
         # For the meta file
         self.meta_file_name=self.train_file_name.replace(".npy",".meta")
         self.meta_file_path=self.train_path
-        self.meta_path_to_file=self.meta_file_path+'\\'+self.meta_file_name
+        self.meta_path_to_file=os.path.join(self.meta_file_path,self.meta_file_name)
 
         self.meta_file=None
 
@@ -168,7 +168,7 @@ class FumeBotTrainingDataSaver:  # To save the training data
         self.training_data = []
         self.saves_per_every = saves_ps  # Save the training data per every X amount of data
 
-        self.train_path_to_file = self.train_path + '\\' + self.train_file_name  # Final path to the file
+        self.train_path_to_file = os.path.join(self.train_path,self.train_file_name)
 
         self.path_to_file_exists = False
 
@@ -194,7 +194,7 @@ class FumeBotTrainingDataSaver:  # To save the training data
         self.train_path=os.path.expanduser(file_path)
         self.training_data=[]
 
-        self.train_path_to_file=self.train_path+'\\'+self.train_file_name
+        self.train_path_to_file=os.path.join(self.train_path,self.train_file_name)
 
         if os.path.isfile(self.train_path_to_file):
             print("File is available, loading previous training data")
@@ -234,7 +234,7 @@ class FumeBotTrainingDataSaver:  # To save the training data
         self.meta_file_name=file_name.replace(".npy",".meta")
         self.meta_file_path=os.path.expanduser(file_path)
 
-        self.meta_path_to_file=self.meta_file_path+'\\'+self.meta_file_name
+        self.meta_path_to_file=os.path.join(self.meta_file_path,self.meta_file_name)
 
         self.meta_file_available=False
 
@@ -321,6 +321,10 @@ class FumeBotTrainingDataSaver:  # To save the training data
 
 
 class ViewTrainingData:  # For viewing the training data
+    """
+    This class is used for viewing the collected training data
+    in the GUI application in a window which is not implemented in the App.
+    """
 
     newFrame = QtCore.pyqtSignal(np.ndarray,np.ndarray)
 
@@ -329,7 +333,7 @@ class ViewTrainingData:  # For viewing the training data
         self.view_file_name=file_name
         self.view_file_path=os.path.expanduser(file_path)
 
-        self.view_path_to_file=self.view_file_path+"\\"+self.view_file_name
+        self.view_path_to_file=os.path.join(self.view_file_path,self.view_file_name)
 
         self.view_thread = threading.Thread(target=self.get_training_data)
         self.view_thread.setDaemon(True)
@@ -369,27 +373,3 @@ class ViewTrainingData:  # For viewing the training data
                 self.view_completed_once=True
 
         print("View thread exited")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

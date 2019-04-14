@@ -1,7 +1,10 @@
+import os
 import cv2
 import numpy as np
 
-training_data=np.load('C:\\Users\\Ajith Thomas\\Documents\\FumeBot - Training Datasets\\training_data_test_obst_crs_v1.5.npy')
+VIS_FILE='training_data_test_obst_crs_v1.5.npy'
+VIS_PATH=os.path.expanduser('~\\Documents\\FumeBot - Training Datasets')
+training_data=np.load(os.path.join(VIS_PATH,VIS_FILE))
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 font_scale = 1

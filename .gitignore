@@ -1,2 +1,8 @@
+# Directories to be ignored
 /.idea/
 **/__pycache__/
+
+# Files with the following extentions are ignored
+**.pyc
+**.swp
+**.o

@@ -20,8 +20,8 @@ import numpy as np
 from PyQt4 import QtCore, QtGui
 from FumeBot_UI import Ui_mainWindow
 from FumeBotDataSaver import FumeBotVideoSaver, FumeBotTrainingDataSaver
-# from FumeBotDNN import FumeBotDNN
-from SockCommThreaded import SockComm
+from FumeBotDNN import FumeBotDNN
+from FumeBotSockComm import SockComm
 from configparser import ConfigParser
 
 
@@ -209,7 +209,7 @@ class MainWindow(QtGui.QMainWindow):
 
     # Variables for the training data generation
     train_file_name='training_dataset.npy'
-    train_file_path=os.path.expanduser('~\\Documents\\FumeBot\\Training')
+    train_file_path='~\\Documents\\FumeBot\\Training'
     train_path_exists=False
     train_frame_width=80
     train_frame_height=60
@@ -247,6 +247,7 @@ class MainWindow(QtGui.QMainWindow):
 
     max_pan_tilt_scaler=10.0
 
+    # Servo motor should be checked to see if the limits can be achieved
     pan_tilt_limit_dict={
         'TILT_UP':180,
         'TILT_DOWN':0,
@@ -339,7 +340,7 @@ class MainWindow(QtGui.QMainWindow):
 
     # Recording video
     video_file_name='Video.avi'
-    video_file_path=os.path.expanduser('~\\Documents\\FumeBot\\Video')
+    video_file_path='~\\Documents\\FumeBot\\Video'
     video_path_exists=False
     rec_width=1280
     rec_height=720
@@ -382,7 +383,11 @@ class MainWindow(QtGui.QMainWindow):
 
         self.display_info(self.app_msg,self.app_name+" "+self.app_version)  # Display the app name and version
 
-        # self.dnn=FumeBotDNN()  # Load the Neural Network
+        self.dnn=None
+        self.button_handle_timer=None
+        self.display_update_timer=None
+        self.warning_flasher_timer=None
+        self.non_critical_flasher_timer=None
 
         self.connection_to_signals()
         self.attributes_of_ui()
@@ -424,7 +429,7 @@ class MainWindow(QtGui.QMainWindow):
         # This is the timer that is used to refresh the display panel
         self.display_update_timer=QtCore.QTimer()
         self.display_update_timer.timeout.connect(self.update_video_feed_display)
-        self.display_update_timer.setInterval(self.calc_interval_from_FPS())
+        self.display_update_timer.setInterval(self.calc_interval_from_fps())
         self.display_update_timer.start()
 
         # Alarm reset button
@@ -465,7 +470,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.feedSetButton.clicked.connect(self.video_disp_set_clicked)
         self.ui.feedResetButton.clicked.connect(self.video_disp_reset_clicked)
 
-        self.ui.enableHUDCheckBox.stateChanged.connect(self.HUD_checkbox_changed)
+        self.ui.enableHUDCheckBox.stateChanged.connect(self.hud_checkbox_changed)
 
         # Connections for the video recording settings toolbox
         self.ui.videoRecSetButton.clicked.connect(self.video_recording_config_set_clicked)
@@ -540,8 +545,9 @@ class MainWindow(QtGui.QMainWindow):
         self.non_critical_flasher_timer.timeout.connect(self.hud_non_critical_flasher_set)
         self.non_critical_flasher_timer.setInterval(self.flash_timer_nc)
 
-        # Connection to the DNN output key press signal
-        # self.dnn.dnnOutputKeyPress.connect(self.handle_dnn_key_press)
+        # Connection to initializing and activating the DNN
+        self.ui.initDNNButton.clicked.connect(self.init_nerual_net)
+        self.ui.controlDNNButton.clicked.connect(self.neural_net_activate_deactivate)
 
     def attributes_of_ui(self):  # Properties of the GUI
 
@@ -797,21 +803,41 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.videoPortSpinBox.setValue(self.port_img)
 
     # Deep Neural Network support functions
+    def init_nerual_net(self):  # Initialize the nerual network defined in the FumeBotDNN file
+
+        self.display_info(self.app_msg, "Trying to initialize DNN. Please wait...")
+
+        try:
+            if self.nn_active is True:  # If the NN was activated before a new initialization was done
+                self.neural_net_activate_deactivate()
+
+            self.dnn=FumeBotDNN()  # Load the Neural Network
+            self.dnn.dnnOutputKeyPress.connect(self.handle_dnn_key_press)  # Connection to the DNN keypress signal
+            self.display_info(self.app_msg,"DNN module initialized successfully")
+        except Exception as e:
+            self.display_info(self.app_msg,"Loading the DNN module failed")
+            self.display_info(self.app_msg,str(e))
+            self.dnn=None
+
     def neural_net_activate_deactivate(self):
 
-        if self.socket_img_connected is True:  # If the socket for video frame is connected
+        if self.socket_img_connected is True:  # Check if the socket for video frame is connected
 
-            self.nn_active = not self.nn_active
+            if self.dnn is not None:  # Check if initialization of DNN module was done
+                self.nn_active = not self.nn_active
 
-            if self.nn_active is True:
-                self.display_info(self.app_msg,"Deep Nerual Network activated")
+                if self.nn_active is True:
+                    self.display_info(self.app_msg,"Deep Nerual Network activated")
+                    self.ui.controlDNNButton.setText("Deactivate")
 
+                else:
+                    self.display_info(self.app_msg,"Deep Nerual Network deactivated")
+                    self.ui.controlDNNButton.setText("Activate")
+                    self.key_pressed_dict=self.default_key_pressed_dict.copy()  # Shallow copy is used to reset the dict
             else:
-                self.display_info(self.app_msg,"Deep Nerual Network deactivated")
-                self.key_pressed_dict=self.default_key_pressed_dict.copy()  # Shallow copy is used to reset the dict
-
+                self.display_info(self.app_msg,"DNN not initialized or an error occurred during initialization")
         else:
-            self.display_info(self.app_msg, "Deep Neural Network cannot be activated. No video feed available")
+            self.display_info(self.app_msg,"Deep Neural Network cannot be activated. No video feed available")
 
     # Capture stream functions
     def get_socket_stream_frames(self, jpeg_bytes, therm_jpeg_bytes):  # Gets the frames and updates the display
@@ -820,7 +846,8 @@ class MainWindow(QtGui.QMainWindow):
         if jpeg_bytes is not None:
             if len(jpeg_bytes) > 0:
 
-                temp_frame_bgr=cv2.imdecode(np.fromstring(jpeg_bytes,dtype=np.uint8),cv2.IMREAD_COLOR)  # convert string bytes to image
+                # Convert string bytes to image
+                temp_frame_bgr=cv2.imdecode(np.fromstring(jpeg_bytes,dtype=np.uint8),cv2.IMREAD_COLOR)
 
                 if temp_frame_bgr is not None:  # If the above operation did not produced a none
                     self.frame_bgr=temp_frame_bgr  # The main frame for BGR data is updated
@@ -838,7 +865,8 @@ class MainWindow(QtGui.QMainWindow):
                                                     interpolation=cv2.INTER_LINEAR)
 
                 if self.nn_active:  # Frames for the input to the neural network
-                    self.frame_dnn_bgr=cv2.resize(self.frame_bgr,(80,60),interpolation=cv2.INTER_LINEAR)
+                    # Preprocessing of image is all done in the DNN program to be presented to the NN
+                    self.frame_dnn_bgr=self.frame_bgr.copy()
 
                 height, width = self.frame_bgr.shape[:2]  # Get the size of the image
 
@@ -868,7 +896,7 @@ class MainWindow(QtGui.QMainWindow):
             trans_result=self.translate_thermal_image(padded_result,self.therm_pos_horz,self.therm_pos_vert)
 
             dst=cv2.addWeighted(self.frame_bgr,float(self.norm_cam_weight/100.0),
-                                    trans_result,float(self.therm_cam_weight/100.0),0)
+                                trans_result,float(self.therm_cam_weight/100.0),0)
 
             self.final_frame=dst
 
@@ -881,14 +909,20 @@ class MainWindow(QtGui.QMainWindow):
         # The video frame update was normally done in this function but was moved to the update video feed function
 
     def update_video_feed_display(self):  # Function to update the video feed at whatever frame rate
-
+        """
+        This function is called at a fixed interval to be display the new
+        image received from the socket. This is not tied to actual frame rate of the
+        images coming through the socket and therefore the same image can be shown multiple
+        times if new images are not received by the get_socket_stream_frames function.
+        Training data and Video recordings are also done here.
+        """
         if self.socket_img_connected is True:
             frame=self.final_frame.copy()  # Copy the frame
-            self.video_HUD_display(frame)  # Add the HUD elements to the frame
+            self.video_hud_display(frame)  # Add the HUD elements to the frame
 
             # Giving the frame to the Neural Network
-            # if self.nn_active is True:
-            #     self.dnn.dnn_model_prediction(dnn_input=self.frame_dnn_bgr)
+            if self.nn_active is True:  # Can be run in the get_socket_stream_frames function
+                self.dnn.dnn_model_prediction(dnn_input=self.frame_dnn_bgr)
 
             # The HUD elements are also saved
             if self.enable_video_recording is True and not self.video_recording_paused:
@@ -917,19 +951,20 @@ class MainWindow(QtGui.QMainWindow):
         else:
             self.display_black_screen()  # Display the black screen
 
-    def calc_interval_from_FPS(self):  # Function that calculates the interval for display update from FPS
+    def calc_interval_from_fps(self):  # Function that calculates the interval for display update from FPS
         interval=(1/float(self.display_fps))*1000.0  # Interval in millisecond
         interval=int(round(interval,0))
 
         return interval  # The interval between frame updates
 
-    def convert_frame_to_pix(self,frame_bgr): # Function to convert cv2 frame to pix format to be displayed in GUI
+    @staticmethod
+    def convert_frame_to_pix(frame_bgr): # Function to convert cv2 frame to pix format to be displayed in GUI
         frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)  # BGR to RGB
         image = QtGui.QImage(frame_rgb, frame_rgb.shape[1], frame_rgb.shape[0], QtGui.QImage.Format_RGB888)
         pixel = QtGui.QPixmap.fromImage(image)
         return pixel  # The pix formatted image ready to be displayed
 
-    def video_HUD_display(self, frame_bgr):  # Function to display Heads Up Display (HUD) elements
+    def video_hud_display(self, frame_bgr):  # Function to display Heads Up Display (HUD) elements
 
         if frame_bgr is not None and self.ui.enableHUDCheckBox.isChecked():
             if len(frame_bgr) > 0:
@@ -1506,7 +1541,8 @@ class MainWindow(QtGui.QMainWindow):
     def thermal_image_pos_vert_slider(self):  # Function gets called when the translation slider changes
         self.therm_pos_vert=self.ui.thermPosVertSlider.value()
 
-    def pad_thermal_image(self,img):  # Function to pad the scaled thermal image which is 160x120 or greater to 1280x720
+    @staticmethod
+    def pad_thermal_image(img):  # Function to pad the scaled thermal image which is 160x120 or greater to 1280x720
         img_height,img_width=img.shape[:2]
 
         if img_width < 1280 and img_height < 720:
@@ -1526,7 +1562,8 @@ class MainWindow(QtGui.QMainWindow):
         else:
             return cv2.resize(img,(1280,720),interpolation=cv2.INTER_LINEAR)
 
-    def scale_thermal_image(self,img,scaler,scale_divider):  # Scale the thermal image
+    @staticmethod
+    def scale_thermal_image(img,scaler,scale_divider):  # Scale the thermal image
         height,width=img.shape[:2]
 
         res = cv2.resize(img,(int(width*scaler/scale_divider),int(height*scaler/scale_divider)),
@@ -1534,14 +1571,16 @@ class MainWindow(QtGui.QMainWindow):
 
         return res
 
-    def change_to_16by9_thermal_image(self,img):  # Function to change from 4:3 to 16:9 aspect ratio
+    @staticmethod
+    def change_to_16by9_thermal_image(img):  # Function to change from 4:3 to 16:9 aspect ratio
         _,width=img.shape[:2]
 
         res=cv2.resize(img,(width,int(width*(9/16))),interpolation=cv2.INTER_LINEAR)
 
         return res
 
-    def translate_thermal_image(self,img,trans_horz,trans_vert):  # Function to translate the thermal image
+    @staticmethod
+    def translate_thermal_image(img,trans_horz,trans_vert):  # Function to translate the thermal image
         rows, columns = img.shape[:2]
 
         TRANS_MATRIX = np.float32([[1, 0, trans_horz], [0, 1, trans_vert]])
@@ -1601,7 +1640,7 @@ class MainWindow(QtGui.QMainWindow):
         else:
             self.ui.enableHUDCheckBox.setChecked(False)
 
-    def HUD_checkbox_changed(self):  # Function which gets called when checkbox changed
+    def hud_checkbox_changed(self):  # Function which gets called when checkbox changed
         if self.ui.enableHUDCheckBox.isChecked():
             self.enable_HUD=1
         else:
@@ -2024,8 +2063,11 @@ class MainWindow(QtGui.QMainWindow):
         self.display_info(self.app_msg,"Use capture resolution: "+str(res_enable_string))
         self.display_info(self.app_msg,"USe capture FPS: "+str(fps_enable_string))
 
+        # The relative path is stored instead of the absolute path
+        rel_path_save=os.path.relpath(self.video_file_path, start=os.path.expanduser('~'))
+
         self.config.set('Video_rec','vid_file_name',str(self.video_file_name))
-        self.config.set('Video_rec','vid_file_path',str(self.video_file_path))
+        self.config.set('Video_rec','vid_file_path',str(rel_path_save))
         self.config.set('Video_rec','vid_rec_res',str(self.rec_res_index))
         self.config.set('Video_rec','vid_rec_fps',str(self.rec_fps))
         self.config.set('Video_rec','use_cap_res',str(self.use_cap_resolution))
@@ -2053,7 +2095,7 @@ class MainWindow(QtGui.QMainWindow):
     def get_video_recording_setting_cfg(self):  # Function to get the video recording configuration
 
         self.video_file_name=self.config.get('Video_rec', 'vid_file_name')
-        self.video_file_path=self.config.get('Video_rec', 'vid_file_path')
+        self.video_file_path=os.path.expanduser(self.config.get('Video_rec', 'vid_file_path'))
         self.rec_res_index=self.config.getint('Video_rec', 'vid_rec_res')
         self.rec_fps=self.config.getint('Video_rec', 'vid_rec_fps')
         self.use_cap_resolution=self.config.getint('Video_rec','use_cap_res')
@@ -2124,8 +2166,11 @@ class MainWindow(QtGui.QMainWindow):
                           str(self.train_frame_width)+"x"+str(self.train_frame_height))
         self.display_info(self.app_msg,"Automatic save per every: "+str(self.save_per_every)+" sample(s)")
 
-        self.config.set('Training_rec', 'train_file_name',self.train_file_name)
-        self.config.set('Training_rec', 'train_file_path',self.train_file_path)
+        # The relative path is stored instead of the absolute path
+        rel_path_save = os.path.relpath(self.train_file_path, start=os.path.expanduser('~'))
+
+        self.config.set('Training_rec', 'train_file_name',str(self.train_file_name))
+        self.config.set('Training_rec', 'train_file_path',str(rel_path_save))
         self.config.set('Training_rec', 'train_frame_width',str(self.train_frame_width))
         self.config.set('Training_rec', 'train_frame_height',str(self.train_frame_height))
         self.config.set('Training_rec', 'save_per_every',str(self.save_per_every))
@@ -2147,7 +2192,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def get_training_recording_setting_cfg(self):
         self.train_file_name=self.config.get('Training_rec','train_file_name')
-        self.train_file_path=self.config.get('Training_rec','train_file_path')
+        self.train_file_path=os.path.expanduser(self.config.get('Training_rec','train_file_path'))
         self.train_frame_width=self.config.getint('Training_rec','train_frame_width')
         self.train_frame_height=self.config.getint('Training_rec','train_frame_height')
         self.save_per_every=self.config.getint('Training_rec','save_per_every')
@@ -2902,8 +2947,8 @@ class MainWindow(QtGui.QMainWindow):
             return
 
         pressed_key=event.key()
-        self.get_key_press(pressed_key)
-        self.get_and_handle_function_key_presses(pressed_key)
+        self.get_key_press(pressed_key)  # Handling keypress for robot motion
+        self.get_and_handle_function_key_presses(pressed_key)  # Handling keypress for functions
 
         self.start_button_press_timer()  # Start the timer
 
@@ -3250,6 +3295,9 @@ class MainWindow(QtGui.QMainWindow):
         elif key_code == QtCore.Qt.Key_T:  # This is to start recording the training data
             self.training_data_recording_start_stop()
 
+        elif key_code == QtCore.Qt.Key_I:  # Initialize the neural network
+            self.init_nerual_net()
+
         elif key_code == QtCore.Qt.Key_N:  # For activating/deactivating the Neural Network
             self.neural_net_activate_deactivate()
 
@@ -3325,7 +3373,8 @@ class MainWindow(QtGui.QMainWindow):
             self.send_socket_commands(cmd)  # Send the pan and tilt command
 
     # Formatting of command
-    def format_command(self,cmd_type,data_list):  # Function to format command and command data
+    @staticmethod
+    def format_command(cmd_type,data_list):  # Function to format command and command data
         start_marker="$"
         end_marker="#"
 
@@ -3580,8 +3629,9 @@ class MainWindow(QtGui.QMainWindow):
         if q_action_obj.text() == "About":
             self.show_about_dialog()
 
-    def show_about_dialog(self):  # Show the about dialog :)
-        from About_UI import Ui_AboutDialog
+    @staticmethod
+    def show_about_dialog():  # Show the about dialog :)
+        from FumeBotAbout_UI import Ui_AboutDialog
         about_dialog=QtGui.QDialog()  # Object of the dialog
         about_ui=Ui_AboutDialog()   # Object of the about UI
         about_ui.setupUi(about_dialog)  # Setup the about UI

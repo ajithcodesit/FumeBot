@@ -1,3 +1,4 @@
+import os
 import cv2
 import numpy as np
 import pandas as pd
@@ -5,7 +6,14 @@ from collections import Counter
 from random import shuffle
 
 # Provide the correct path to the dataset
-train_data=np.load("C:\\Users\\Ajith Thomas\\Documents\\FumeBot\\Training\\training_data_obst_crs.npy")
+DATASET_NAME="training_data_obst_crs.npy"
+DATASET_PATH=os.path.expanduser("~\\Documents\\FumeBot\\Training")
+
+# Processed dataset file save path and name
+PROC_DATASET_NAME="training_data_obs_crs_v1.npy"
+PROC_DATASET_PATH="~\\Documents\\FumeBot - Training Datasets"
+
+train_data=np.load(os.path.join(DATASET_PATH,DATASET_NAME))
 
 df=pd.DataFrame(train_data)  # The data frame
 
@@ -48,6 +56,6 @@ print("Final data size = "+str(len(final_data)))
 
 print("Saving training data...")
 
-np.save('C:\\Users\\Ajith Thomas\\Documents\\FumeBot - Training Datasets\\training_data_obs_crs_v1.npy',final_data)
+np.save(os.path.join(PROC_DATASET_PATH,PROC_DATASET_NAME),final_data)
 
 print("Training data saved")
