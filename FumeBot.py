@@ -546,7 +546,7 @@ class MainWindow(QtGui.QMainWindow):
         self.non_critical_flasher_timer.setInterval(self.flash_timer_nc)
 
         # Connection to initializing and activating the DNN
-        self.ui.initDNNButton.clicked.connect(self.init_nerual_net)
+        self.ui.initDNNButton.clicked.connect(self.init_neural_net)
         self.ui.controlDNNButton.clicked.connect(self.neural_net_activate_deactivate)
 
     def attributes_of_ui(self):  # Properties of the GUI
@@ -803,7 +803,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.videoPortSpinBox.setValue(self.port_img)
 
     # Deep Neural Network support functions
-    def init_nerual_net(self):  # Initialize the nerual network defined in the FumeBotDNN file
+    def init_neural_net(self):  # Initialize the neural network defined in the FumeBotDNN file
 
         self.display_info(self.app_msg, "Trying to initialize DNN. Please wait...")
 
@@ -3296,7 +3296,7 @@ class MainWindow(QtGui.QMainWindow):
             self.training_data_recording_start_stop()
 
         elif key_code == QtCore.Qt.Key_I:  # Initialize the neural network
-            self.init_nerual_net()
+            self.init_neural_net()
 
         elif key_code == QtCore.Qt.Key_N:  # For activating/deactivating the Neural Network
             self.neural_net_activate_deactivate()
