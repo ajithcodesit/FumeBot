@@ -151,7 +151,7 @@ The following software needs to be installed before running the main programs.
   - SparkFun CCS811 Library
   - SparkFun MAX3010x Pulse and Proximity Sensor Library
   
-  The `FumeBOT.ino` file must be flashed to the Arduino MEGA and can be found [here](./FumeBot-Firmware/FumeBOT/)
+  The `FumeBOT.ino` file must be flashed to the Arduino MEGA and can be found [here](./FumeBot-Firmware/FumeBOT/).
 
 ## Usage
 
