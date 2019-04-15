@@ -3,7 +3,7 @@
 FumeBot is a Deep Neural Network controlled robot. The mobile robot is autonomous and can
 be fitted with a range of sensors for different purposes.
 
-![FumeBot](./Images/FumeBot.jpg =640x)
+<img src=./Images/FumeBot.jpg alt="FumeBot" width="640">
 
 ## Table of Contents
 - [**FumeBot**](#fumebot)
@@ -35,13 +35,13 @@ This was done as a masters final project. The idea was to check different kinds 
 
 FumeBot is a differential drive robot with a Raspberry Pi 3B and Arduino Mega 2560 on-board. The Raspberry is connected to a Raspberry Pi 5MP camera and also a Lepton 3 thermal camera. The Arduino interfaces with the stepper motor drivers, sensors and a 3G module, the data from which are sent back to the Raspberry through a UART connection. The Raspberry connects to a laptop through WiFi where the DNN is being run for inference. The DNN is being run on the laptop because if complex models are used then more processing power is available.
 
-![Communication](./Images/OverallCommArchitecture.jpg =640x)
+<img src=./Images/OverallCommArchitecture.jpg alt="Communication" width="640">
 
 The Raspberry Pi handles the heavy task of maintaining communication with the laptop, sending camera frames from both the RPi camera and Lepton back to the main computer. It also handles sending or receiving commands or data from the Main computer or Arduino microcontroller.
 
 The robot is powered by two battery banks, one for driving the servo and stepper motors while the other is being used to power the Raspberry Pi 3, Arduino MCU, sensors and the 3G module. The range of motion available to the robot is shown below:
 
-![Movement](./Images/FumeBotMovement.jpg =320x)
+<img src=./Images/FumeBotMovement.jpg alt="Movement" width="320">
 
 In addition to controlling the robot's movement, the camera fork mount can be controlled as well to look around. The sensors carried by the robot are a gas sensor for measuring CO2 and TVOC (Total Volatile Organic Compound), particle sensor for detecting smoke and an environmental sensor for measuring pressure, temperature and humidity. Thresholds can be used to alert the user if the robot has detected smoke or high amounts of CO2 or TVOC. The alert can be sent over WiFi or through the 3G module by SMS if WiFi is not available.
 
@@ -49,7 +49,7 @@ In addition to controlling the robot's movement, the camera fork mount can be co
 
 As mentioned earlier the DNN used for the robot is a Convolutional Neural Network (CNN) which is a slight variation of AlexNet and can be seen in the image below.
 
-![CNN](./Images/AlexNetFumeBot.jpg =640x)
+<img src=./Images/AlexNetFumeBot.jpg alt="CNN" width="640">
 
 For training the CNN, supervised learning was used in which data was collected by manually driving the robot and recording the camera frames along with the WASD key presses associated with that frame. The CNN was then trained to classify the correct key to press based on the frame received from the camera. The camera image given to the CNN was a grayscale 80x60 and the output from it is a one hot vector for example, `[0, 1, 0]` which is `[Forward left turn, Forward, Forward right turn]` of this `Forward` is selected as it is set to one.
 
@@ -59,9 +59,8 @@ The full range of motion available to the robot was not used to test whether the
 
 A GUI was made to control the robot and to change the settings of the robot. The main function of the GUI is to display the image coming from the cameras, control the robot's movement and also the camera mount, record training data like the camera image and the key strokes as a one hot vector, video recording, changing the sensors thresholds and connection settings. The following is the GUI and the video stream coming from the robot displayed in the GUI respectively: 
 
-![GUI](./Images/FumeBotGUI.png =640x)
-
-![GUI video](./Images/LabTestRobot.gif =640x)
+<img src=./Images/FumeBotGUI.png alt="GUI" width="640">
+<img src=./Images/LabTestRobot.gif alt="GUI video" width="640">
 
 ## Testing and Observations
 
@@ -69,7 +68,7 @@ The AlexNet CNN was trained on data collected from a simple obstacle course and 
 it has generalized well. The obstacles when collecting the training data were orange cylinders but during testing other colors and different arrangement of
 the obstacle was used to test whether it would confuse the neural network.
 
-![FumeBot Lab Test Video](./Images/LabTestHandheld.gif)
+<img src=./Images/LabTestHandheld.gif alt="FumeBot Lab Test Video">
 
 On testing the robot with different obstacle courses it was found that the robot has learned to navigate the courses. The obstacle color did not confuse the robot probably because grayscale images were used for training and inference which helped in not overfitting over the color of the obstacle used. But human biases
 were learned by the network, for example, in order to make it obvious to the network to avoid the obstacle, it was intentionally driven up to the obstacle and avoided at the last moment which caused the neural network to follow the obstacle if moved and then avoid it. The robot was able to stay in the obstacle 
@@ -170,7 +169,8 @@ The data communication and reception of video stream is done in `FumeBotSockComm
 
 The frames coming from the camera are in JPEG format and is then rendered in the GUI video frame. The figure shown below shows how the video is sent from the client (Robot) to the Server (Fumebot GUI application). Both the RPi camera and the Lepton thermal camera follows the same procedure for transmission of video.
 
-![VideoTx](./Images/FrameSendingReceiving.jpg =640x) 
+<img src=./Images/FrameSendingReceiving.jpg alt="Video TX RX" width="640">
+
 
 If other data needs to be sent from the robot, the `handle_socket_data` function needs to be modified. All the data communication from the Raspberry and Window PC needs to be in the following format:
 ```
