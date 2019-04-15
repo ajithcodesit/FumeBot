@@ -59,7 +59,8 @@ The full range of motion available to the robot was not used to test whether the
 
 A GUI was made to control the robot and to change the settings of the robot. The main function of the GUI is to display the image coming from the cameras, control the robot's movement and also the camera mount, record training data like the camera image and the key strokes as a one hot vector, video recording, changing the sensors thresholds and connection settings. The following is the GUI and the video stream coming from the robot displayed in the GUI respectively: 
 
-<img src=./Images/FumeBotGUI.png alt="GUI" width="640">
+<img src=./Images/FumeBotGUI.PNG alt="GUI" width="640">
+
 <img src=./Images/LabTestRobot.gif alt="GUI video" width="640">
 
 ## Testing and Observations
