@@ -1,5 +1,6 @@
 # Directories to be ignored
 /.idea/
+/.vscode/
 **/__pycache__/
 
 # Files with the following extensions are ignored
