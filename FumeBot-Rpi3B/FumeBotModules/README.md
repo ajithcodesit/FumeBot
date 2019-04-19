@@ -1,4 +1,4 @@
-## **Mobile Robot side Modules**
+## **Modules for Mobile Robot Side**
 
 #### Communication modules for the Robot
 The communication between the robot and GUI application is achieved by using the `FumeBotSocketComm.py` which uses TCP sockets for streaming data. On the other hand the communication between the Raspberry Pi and the Arduino microcontroller is realized through `FumeBotSerialComm.py` module. The serial communication is through a standard UART port available on both the Arduino MEGA and Raspberry Pi. 
