@@ -18,11 +18,12 @@ import datetime
 import ctypes
 import numpy as np
 from PyQt4 import QtCore, QtGui
-from FumeBot_UI import Ui_mainWindow
-from FumeBotDataSaver import FumeBotVideoSaver, FumeBotTrainingDataSaver
-from FumeBotDNN import FumeBotDNN
-from FumeBotSockComm import SockComm
 from configparser import ConfigParser
+
+from FumeBotGUI.FumeBot_UI import Ui_mainWindow
+from FumeBotGUI.FumeBotDataSaver import FumeBotVideoSaver, FumeBotTrainingDataSaver
+from FumeBotGUI.FumeBotDNN import FumeBotDNN
+from FumeBotGUI.FumeBotSockComm import SockComm
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -3546,7 +3547,7 @@ class MainWindow(QtGui.QMainWindow):
         reboot_btn_msg=QtGui.QPushButton('Reboot')
 
         msg.setIcon(QtGui.QMessageBox.Question)
-        msg.setWindowIcon(QtGui.QIcon("bot_icon.jpg"))
+        msg.setWindowIcon(QtGui.QIcon(":/Icons/bot_icon.jpg"))
         msg.setWindowTitle("Reboot Raspberry Pi")
         msg.setText("Are you sure you want to reboot the Raspberry Pi?")
 
@@ -3574,7 +3575,7 @@ class MainWindow(QtGui.QMainWindow):
         reset_btn_msg = QtGui.QPushButton('Reset')
 
         msg.setIcon(QtGui.QMessageBox.Question)
-        msg.setWindowIcon(QtGui.QIcon("bot_icon.jpg"))
+        msg.setWindowIcon(QtGui.QIcon(":/Icons/bot_icon.jpg"))
         msg.setWindowTitle("Reset Microcontroller")
         msg.setText("Are you sure you want to reset the microcontroller?")
 
@@ -3602,7 +3603,7 @@ class MainWindow(QtGui.QMainWindow):
         pwr_btn_msg = QtGui.QPushButton('Power Off')
 
         msg.setIcon(QtGui.QMessageBox.Warning)
-        msg.setWindowIcon(QtGui.QIcon("bot_icon.jpg"))
+        msg.setWindowIcon(QtGui.QIcon(":/Icons/bot_icon.jpg"))
         msg.setWindowTitle("Power Off Raspberry Pi")
         msg.setText("Are you sure you want to power off the Raspberry Pi?")
 
@@ -3631,7 +3632,7 @@ class MainWindow(QtGui.QMainWindow):
 
     @staticmethod
     def show_about_dialog():  # Show the about dialog :)
-        from FumeBotAbout_UI import Ui_AboutDialog
+        from FumeBotGUI.FumeBotAbout_UI import Ui_AboutDialog
         about_dialog=QtGui.QDialog()  # Object of the dialog
         about_ui=Ui_AboutDialog()   # Object of the about UI
         about_ui.setupUi(about_dialog)  # Setup the about UI
@@ -3653,7 +3654,7 @@ class MainWindow(QtGui.QMainWindow):
         msg=QtGui.QMessageBox()
 
         msg.setIcon(QtGui.QMessageBox.Warning)
-        msg.setWindowIcon(QtGui.QIcon("bot_icon.jpg"))
+        msg.setWindowIcon(QtGui.QIcon(":/Icons/bot_icon.jpg"))
         msg.setWindowTitle("Exit")
         msg.setText("Are you sure you want to exit "+self.app_name+" ?")
 
