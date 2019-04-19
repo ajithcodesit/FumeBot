@@ -1,0 +1,9 @@
+<RCC>
+  <qresource prefix="Icons">
+    <file>bot_icon.jpg</file>
+  </qresource>
+  <qresource prefix="Images">
+    <file>about_image.jpg</file>
+    <file>black_screen.jpg</file>
+  </qresource>
+</RCC>
