@@ -22,6 +22,7 @@ from queue import Queue
 from threading import Thread
 import cv2
 import numpy as np 
+
 from Lepton3CapLib import Lepton3
 
 

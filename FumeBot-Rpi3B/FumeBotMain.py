@@ -17,9 +17,10 @@ import os
 import time
 import subprocess
 from ConfigParser import ConfigParser
+import RPi.GPIO as GPIO
+
 from FumeBotSerialComm import FumeBotSerial
 from FumeBotSocketComm import FumeBotSocket
-import RPi.GPIO as GPIO
 
 # Status LED
 RUNNING_LED=17
