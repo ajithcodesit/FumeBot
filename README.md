@@ -171,13 +171,13 @@ The training data recording can be started or stopped by pressing 'T' key or the
 
 #### The Deep Neural Network (AlexNet)
 
-The AlexNet CNN model is defined in `DeepNeuralNetworkModel.py` the methods of which are loaded into `FumeBotDNN.py`. The model is loaded and weights are applied in the constructor of the `FumeBotDNN` class. The `dnn_prediction_function` is used for inference and the output of this function is the required key the CNN wants to send to the robot. The key classification should be a one-hot vector, for example, `[1, 0, 1]`. The predicted key press vector is emitted as a signal in PyQt to the main GUI application and is handled by the `handle_dnn_key_ press` function.
+The AlexNet CNN model is defined in `DeepNeuralNetworkModel.py` the methods of which are loaded into `FumeBotGUI/FumeBotDNN.py`. The model is loaded and weights are applied in the constructor of the `FumeBotDNN` class. The `dnn_prediction_function` is used for inference and the output of this function is the required key the CNN wants to send to the robot. The key classification should be a one-hot vector, for example, `[1, 0, 1]`. The predicted key press vector is emitted as a signal in PyQt to the main GUI application and is handled by the `handle_dnn_key_press` function.
 
 For inference on images coming from the robot, the DNN must be first initialized by pressing the 'I' key or "Initialize" button. To start the prediction the 'N' key can be used to toggle it or "Activate" button can be pressed. The `FumeBotDNN.py` is loaded into the main GUI application `FumeBot.py` in which the `dnn_prediction_function` mentioned earlier is run inside the `update_video_feed_display` function.
 
 #### Data Communication and Video Transmission
 
-The data communication and reception of video stream is done in `FumeBotSockComm.py`. The handling of data is done in the `handle_socket_data` function and the image frames from the camera is handled in the `get_socket_stream_frames` function in the main GUI. The data is exchanged between the `FumeBotSockComm.py` and `FumeBot.py` in the form of PyQt signals as mentioned above in the case of the DNN.
+The data communication and reception of video stream is done in `FumeBotGUI/FumeBotSockComm.py`. The handling of data is done in the `handle_socket_data` function and the image frames from the camera is handled in the `get_socket_stream_frames` function in the main GUI. The data is exchanged between the `FumeBotSockComm.py` and `FumeBot.py` in the form of PyQt signals as mentioned above in the case of the DNN.
 
 The frames coming from the camera are in JPEG format and is then rendered in the GUI video frame. The figure shown below shows how the video is sent from the client (Robot) to the Server (Fumebot GUI application). Both the RPi camera and the Lepton thermal camera follows the same procedure for transmission of video.
 
