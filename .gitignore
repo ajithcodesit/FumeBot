@@ -2,7 +2,7 @@
 /.idea/
 **/__pycache__/
 
-# Files with the following extentions are ignored
+# Files with the following extensions are ignored
 **.pyc
 **.swp
 **.o
