@@ -31,7 +31,7 @@ MCU_RDY=23
 
 # Configuration file for fumebot
 CONFIG_FILE='bot_config.ini'
-CONFIG_PATH='/home/pi/FumeBot-Rpi3/'
+CONFIG_PATH='/home/pi/FumeBot-Rpi3B/'
 config_path=os.path.join(CONFIG_PATH,CONFIG_FILE)
 
 # Host address and Ports for socket communication

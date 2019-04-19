@@ -12,7 +12,7 @@ class Lepton3(object):
 		self.dev_delay=delay
 		self.enable_debug=debug
 
-		self.lep3CapLib=ctypes.CDLL("/home/pi/FumeBot-Rpi3/libLep3cap.so")  # Load the shared object library
+		self.lep3CapLib=ctypes.CDLL("/home/pi/FumeBot-Rpi3B/libLep3cap.so")  # Load the shared object library
 
 		# Setup Lepton 3 SPI device name and speed
 		self.lep3CapLib.setup_lepton3(ctypes.c_char_p(self.dev_name),ctypes.c_uint32(self.dev_speed),
