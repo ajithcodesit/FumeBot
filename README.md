@@ -129,7 +129,7 @@ The following software needs to be installed before running the main programs.
   The above packages are for Python 2.7. OpenCV needs to compiled from source and installed using instructions 
   found [here](https://www.pyimagesearch.com/2015/07/27/installing-opencv-3-0-for-both-python-2-7-and-python-3-on-your-raspberry-pi-2/). OpenCV was installed without Python Virtual Environment.
 
-  The `FumeBot-RPi3B` file needs to be copied to `/home/pi/` directory of the Raspberry Pi and the `botsetup.sh` script should be run. This will create a service that starts every time the Raspberry boots and can be controlled using systemctl.
+  The `FumeBot-RPi3B` file needs to be copied to `/home/pi/` directory of the Raspberry Pi and the `botsetup.sh` script should be run. This will create a service that starts every time the Raspberry boots and can be controlled using `systemctl`.
 
   ```bash
   # To run the script
