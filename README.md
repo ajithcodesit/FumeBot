@@ -1,7 +1,7 @@
 # **FumeBot**
 
-FumeBot is a Deep Neural Network controlled robot. The mobile robot is autonomous and can
-be fitted with a range of sensors for different purposes.
+FumeBot is a Deep Neural Network controlled robot. The mobile robot is autonomous and can be fitted with a range of sensors for different purposes. 
+This was completed as the final project for Master of Science in Mechatronics at Newcastle University situated in Newcastle upon Tyne, United Kingdom. 
 
 <p align="center">
 <img src=./Images/FumeBot.jpg alt="FumeBot" width="640">
