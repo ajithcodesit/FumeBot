@@ -38,7 +38,7 @@ This was done as a masters final project. The idea was to check different kinds 
 FumeBot is a differential drive robot with a Raspberry Pi 3B and Arduino Mega 2560 on-board. The Raspberry is connected to a Raspberry Pi 5MP camera and also a Lepton 3 thermal camera. The Arduino interfaces with the stepper motor drivers, sensors and a 3G module, the data from which are sent back to the Raspberry through a UART connection. The Raspberry connects to a laptop through WiFi where the DNN is being run for inference. The DNN is being run on the laptop because if complex models are used then more processing power is available.
 
 <p align="center">
-<img src=./Images/OverallCommArchitecture.jpg alt="Communication" width="640">
+<img src=./Images/OverallCommArchitecture.jpg alt="Communication" width="720">
 </p>
 
 The Raspberry Pi handles the heavy task of maintaining communication with the laptop, sending camera frames from both the RPi camera and Lepton back to the main computer. It also handles sending or receiving commands or data from the Main computer or Arduino microcontroller.
