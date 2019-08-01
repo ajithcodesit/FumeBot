@@ -1,7 +1,7 @@
 # **FumeBot**
 
 FumeBot is a Deep Neural Network controlled robot. The mobile robot is autonomous and can be fitted with a range of sensors for different purposes. 
-This was completed as the final project for Master of Science in Mechatronics at Newcastle University situated in Newcastle upon Tyne, United Kingdom. 
+This was completed as the final project for Master of Science in Mechatronics at Newcastle University situated in Newcastle upon Tyne, United Kingdom. This project is a published journal at MDPI as [*FumeBot: A Deep Convolutional Neural Network Controlled Robot*](#publication).
 
 <p align="center">
 <img src=./Images/FumeBot.jpg alt="FumeBot" width="640">
@@ -25,6 +25,7 @@ This was completed as the final project for Master of Science in Mechatronics at
       - [Collecting the Training Data](#collecting-the-training-data)
       - [The Deep Neural Network (AlexNet)](#the-deep-neural-network-alexnet)
       - [Data Communication and Video Transmission](#data-communication-and-video-transmission)
+  - [Publication](#publication)
   - [Issues](#issues)
 
 ## Motivation
@@ -195,6 +196,10 @@ Data communication between the Raspberry and Arduino is in the following format:
 <CMD>,<DATA1>,<DATA2>,…,<DATA(n-1)>,\n
 ```
 All the data are sent and received in plain string format.
+
+## Publication
+
+[Thomas, A.; Hedley, J. FumeBot: A Deep Convolutional Neural Network Controlled Robot. *Robotics* **2019**, 8, 62.](https://doi.org/10.3390/robotics8030062)
 
 ## Issues
 
